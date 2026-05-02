@@ -1,1 +1,8 @@
 venv/
+
+# Pickled maps / artifacts (regenerate from training; do not commit)
+*.pkl
+
+# MLflow local tracking and exported models (large; regenerate or use remote tracking)
+mlruns/
+mlartifacts/

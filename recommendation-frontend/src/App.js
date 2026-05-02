@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
+import {
   Container,
   TextField,
   Button,
@@ -17,6 +17,11 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
+
+const apiRoot =
+  process.env.REACT_APP_API_BASE != null && process.env.REACT_APP_API_BASE !== ''
+    ? `${String(process.env.REACT_APP_API_BASE).replace(/\/$/, '')}/api`
+    : '/api';
 
 function App() {
   const [userId, setUserId] = useState('');
@@ -38,7 +43,7 @@ function App() {
     setUsersLoading(true);
     setUsersError(null);
     try {
-      const response = await axios.get('http://localhost:5001/users');
+      const response = await axios.get(`${apiRoot}/users`);
       setUsers(response.data.users || []);
       setTotalUsers(response.data.total_users || 0);
     } catch (err) {
@@ -54,7 +59,7 @@ function App() {
     setError(null);
     
     try {
-      const response = await axios.post('http://localhost:5001/recommend', {
+      const response = await axios.post(`${apiRoot}/recommend`, {
         user_id: userId
       });
       setRecommendations(response.data);
@@ -131,8 +136,8 @@ function App() {
                     {recommendations.map((rec, index) => (
                       <ListItem key={index} divider>
                         <ListItemText
-                          primary={`Item ID: ${rec.item_idx}`}
-                          secondary={`Confidence Score: ${rec.score.toFixed(4)}`}
+                          primary={`Item: ${rec.item_id != null ? String(rec.item_id) : `(index ${rec.item_idx})`}`}
+                          secondary={`Score: ${Number(rec.score).toFixed(4)} · internal index: ${rec.item_idx}`}
                         />
                       </ListItem>
                     ))}
